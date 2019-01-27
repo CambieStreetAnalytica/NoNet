@@ -17,7 +17,7 @@ const TR = "tr";
 const URL = "url";
 const HELP = "cmd";
 const validTypes = [WEB, YELP, WIKI, TR, HELP, URL];
-const supportedLanguages = ["en", "fr", "ru", "de", "es"];
+const supportedLanguages = ["en", "fr", "ru", "de", "es", "zh-CN"];
 
 const yelp_key = "002412142127618762442:e7hmnqop_ai";
 const wiki_key = "002412142127618762442:q3eq1hoh6wu";
@@ -26,7 +26,7 @@ const api_key = "AIzaSyAk8DBiHCVqJJaIoebDgaShY9R647qN37E";
 const DIFF_TOKEN = "ceff2bb13d9516c044cc4f7894d0e93d";
 
 const DEFAULT_SEARCH_LIMIT = 5;
-const DEFAULT_TRANSLATE_LANGUAGE = "fr";
+const DEFAULT_TRANSLATE_LANGUAGE = "en";
 
 let output = "";
 
