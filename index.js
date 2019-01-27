@@ -27,9 +27,9 @@ app.get("/", (req, res) => {
 
 const MessagingResponse = require("twilio").twiml.MessagingResponse;
 
-// search("burger", 6, yelp_key, parseResponseYelp).then(function(val) {
-//   console.log(val);
-// });
+search("burger", 6, goog_key, parseResponseGoog).then(function(val) {
+  console.log(val);
+});
 
 app.post("/sms", (req, res) => {
   const twiml = new MessagingResponse();
@@ -72,7 +72,9 @@ function search(query, amount, key, parsing) {
     "&cx=" +
     key +
     "&q=" +
-    query;
+    query +
+    "&num=" +
+    amount;
   console.log(url);
 
   const options = {
@@ -111,7 +113,7 @@ function parseMessage(msg) {
 }
 
 function parseResponseGoog(json) {
-  return JSON.stringify(json.items[0].title);
+  return JSON.stringify(json);
 }
 
 function parseResponseYelp(json) {
