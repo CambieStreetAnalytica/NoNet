@@ -32,7 +32,7 @@ app.use(bodyParser.urlencoded({extended: false}));
 
 app.listen(port, () => {
     console.log(`Example app listening on port ${port}!`);
-    searchURL("https://google.com").then(console.log);
+    searchURL("www.diffbot.com/dev/docs/article/").then(console.log);
     // console.log(parseMessage("yelp: chinese"));
     // console.log(parseMessage("yelp 10: chinese"));
     // console.log(parseMessage("hello world"));
@@ -142,7 +142,7 @@ function parseMessage(msg) {
         const isValid = supportedLanguages.includes(lang) && query !== undefined;
         return isValid ? {type: type, lang: lang, query: query} : null;
     } else if (type === URL) {
-        const isValid = query.includes("http") || query.includes("https");
+        const isValid = query.includes(".");
         return isValid ? {type: type, query: query} : null;
     } else {
         const amount =
@@ -214,7 +214,7 @@ function parseResponseTranslate(arr, lang) {
 
 
 function searchURL(url) {
-    let call = `https://api.diffbot.com/v3/article?token=${DIFF_TOKEN}&url=${url}`;
+    let call = `https://api.diffbot.com/v3/article?token=${DIFF_TOKEN}&url=https://${url}`;
 
     const options = {
         url: call,
