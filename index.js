@@ -34,7 +34,7 @@ app.listen(port, () => {
   // console.log(parseMessage("yelp: chinese"));
   // console.log(parseMessage("yelp 10: chinese"));
   // console.log(parseMessage("hello world"));
-  searchTranslation("Hello world", "de").then(console.log);
+  // searchTranslation("Hello world", "de").then(console.log);
 });
 app.get("/", (req, res) => {
   res.send("Application Base");
@@ -93,7 +93,6 @@ function search(query, amount, key, parsing) {
     query +
     "&num=" +
     amount;
-  // console.log(url);
 
   const options = {
     url: url,
@@ -106,7 +105,8 @@ function search(query, amount, key, parsing) {
 
   return request(options).then(function(body) {
     let json = JSON.parse(body);
-    response = parsing(json);
+    response = parsing(json, amount);
+    console.log(json);
     return response;
   });
 }
