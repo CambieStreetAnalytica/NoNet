@@ -27,17 +27,17 @@ const api_key = "AIzaSyCeb1PbN_a3Bth_f6VR9krKRjKuc1KPcjw";
 const DEFAULT_SEARCH_LIMIT = 5;
 const DEFAULT_TRANSLATE_LANGUAGE = "fr";
 
-app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.urlencoded({extended: false}));
 
 app.listen(port, () => {
-  console.log(`Example app listening on port ${port}!`);
-  // console.log(parseMessage("yelp: chinese"));
-  // console.log(parseMessage("yelp 10: chinese"));
-  // console.log(parseMessage("hello world"));
-  searchTranslation("Hello world", "de").then(console.log);
+    console.log(`Example app listening on port ${port}!`);
+    // console.log(parseMessage("yelp: chinese"));
+    // console.log(parseMessage("yelp 10: chinese"));
+    // console.log(parseMessage("hello world"));
+    searchTranslation("Hello world", "de").then(console.log);
 });
 app.get("/", (req, res) => {
-  res.send("Application Base");
+    res.send("Application Base");
 });
 
 const MessagingResponse = require("twilio").twiml.MessagingResponse;
@@ -47,71 +47,72 @@ const MessagingResponse = require("twilio").twiml.MessagingResponse;
 // });
 
 app.post("/sms", (req, res) => {
-  const twiml = new MessagingResponse();
-  const incomingMessage = req.body.Body.toLowerCase();
-  const searchQuery = parseMessage(incomingMessage);
-  if (searchQuery === null) {
-    twiml.message(
-      "Invalid Search Query, please make query of form 'type limit search'"
-    );
-    sendMessage(res, twiml, 200);
-  } else {
-    makeQuery(searchQuery.type, searchQuery.amount, searchQuery.query).then(
-      function(value) {
-        twiml.message(value);
+    const twiml = new MessagingResponse();
+    const incomingMessage = req.body.Body.toLowerCase();
+    const searchQuery = parseMessage(incomingMessage);
+    if (searchQuery === null) {
+        twiml.message(
+            "Invalid Search Query, please make query of form 'type limit search'"
+        );
         sendMessage(res, twiml, 200);
-      }
-    );
-  }
+    } else {
+        let opt = searchQuery.hasOwnProperty("amount") ? searchQuery.amount : searchQuery.lang;
+        makeQuery(searchQuery.type, opt, searchQuery.query).then(
+            function (value) {
+                twiml.message(value);
+                sendMessage(res, twiml, 200);
+            }
+        );
+    }
 });
 
 function makeQuery(type, opt, query) {
-  if (type === WEB) {
-    return search(query, opt, goog_key, parseResponseGoog);
-  } else if (type === WIKI) {
-    return search(query, opt, wiki_key, parseResponseWiki);
-  } else if (type === YELP) {
-    return search(query, opt, yelp_key, parseResponseYelp);
-  } else if (type === TR) {
-    return searchTranslation(query, amount);
-  }
+    if (type === WEB) {
+        return search(query, opt, goog_key, parseResponseGoog);
+    } else if (type === WIKI) {
+        return search(query, opt, wiki_key, parseResponseWiki);
+    } else if (type === YELP) {
+        return search(query, opt, yelp_key, parseResponseYelp);
+    } else if (type === TR) {
+        return searchTranslation(query, amount);
+    }
 }
 
 function sendMessage(res, twiml, status) {
-  res.writeHead(status, { "Content-Type": "text/xml" });
-  res.end(twiml.toString());
+    res.writeHead(status, {"Content-Type": "text/xml"});
+    res.end(twiml.toString());
 }
 
 function search(query, amount, key, parsing) {
-  const url =
-    "https://www.googleapis.com/customsearch/v1?key=" +
-    api_key +
-    "&cx=" +
-    key +
-    "&q=" +
-    query +
-    "&num=" +
-    amount;
-  // console.log(url);
+    const url =
+        "https://www.googleapis.com/customsearch/v1?key=" +
+        api_key +
+        "&cx=" +
+        key +
+        "&q=" +
+        query +
+        "&num=" +
+        amount;
+    // console.log(url);
 
-  const options = {
-    url: url,
-    method: "GET",
-    headers: {
-      Accept: "application/json",
-      "Accept-Charset": "utf-8"
-    }
-  };
+    const options = {
+        url: url,
+        method: "GET",
+        headers: {
+            Accept: "application/json",
+            "Accept-Charset": "utf-8"
+        }
+    };
 
-  return request(options).then(function(body) {
-    let json = JSON.parse(body);
-    response = parsing(json);
-    return response;
-  });
+    return request(options).then(function (body) {
+        let json = JSON.parse(body);
+        response = parsing(json);
+        return response;
+    });
 }
 
 function searchTranslation(text, lang) {
-    return translate.translate(text, lang).then(function(translated){
+    return translate.translate(text, lang).then(function (translated) {
         return parseResponseTranslate(translated, lang);
     })
 }
@@ -136,15 +137,15 @@ function parseMessage(msg) {
 }
 
 function parseResponseGoog(json) {
-  return JSON.stringify(json);
+    return JSON.stringify(json);
 }
 
 function parseResponseYelp(json) {
-  return JSON.stringify(json.items[0].title);
+    return JSON.stringify(json.items[0].title);
 }
 
 function parseResponseWiki(json) {
-  return JSON.stringify(json.items[0].title);
+    return JSON.stringify(json.items[0].title);
 }
 
 function parseResponseTranslate(arr, lang) {
