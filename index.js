@@ -181,7 +181,6 @@ function parseResponseGoog(json, amount) {
     try {
       if (json.items[i].pagemap.metatags[0]["og:url"] == undefined) {
         let link = json.items[i].link;
-        //.replace("https://", "");
           if (link.includes("https://")) {
               link = link.replace("https://", "");
           } else {
