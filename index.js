@@ -148,25 +148,29 @@ function parseMessage(msg) {
 
 function parseResponseGoog(json, amount) {
   let output = "";
-  for (i = 0; i < amount; i++) {
+  let char_count = 0;
+  for (i = 0; i < amount && char_count <= 1400; i++) {
     k = 1 + i;
     output += "result:" + k + "\n";
     output += JSON.stringify(json.items[i].title) + "\n";
     output += JSON.stringify(json.items[i].snippet) + "\n";
     output += "URL: " + JSON.stringify(json.items[i].link) + "\n";
     output += "\n";
+    char_count = output.length;
   }
   return output;
 }
 
 function parseResponseWiki(json, amount) {
   let output = "";
-  for (i = 0; i < amount; i++) {
+  let char_count = 0;
+  for (i = 0; i < amount && char_count <= 1400; i++) {
     k = 1 + i;
     output += "result:" + k + "\n";
     output += JSON.stringify(json.items[i].title) + "\n";
     output += JSON.stringify(json.items[i].snippet) + "\n";
     output += "\n";
+    char_count = output.length;
   }
   return output;
 }
@@ -192,7 +196,7 @@ function parseResponseYelp(json, amount) {
       "\n";
     output += "\n";
     char_count = output.length;
-    console.log(char_count);
+    //console.log(char_count);
   }
   return output;
 }
