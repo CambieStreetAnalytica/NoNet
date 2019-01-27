@@ -18,3 +18,24 @@ app.post('/sms', (req, res) => {
     res.writeHead(200, {'Content-Type': 'text/xml'});
     res.end(twiml.toString());
 });
+
+// returns promise of {title, desc, link}
+function searchGoogle(query) {
+    return new Promise(function(res, rej) {
+        resolve({});
+    });
+}
+
+// returns promise of {title, desc, link}
+function searchYelp(query) {
+    return new Promise(function(res, rej) {
+        resolve({});
+    });
+}
+
+// returns promise of {title, desc, link}
+function searchWikedpia(query) {
+    return new Promise(function(res, rej) {
+        resolve({});
+    });
+}
