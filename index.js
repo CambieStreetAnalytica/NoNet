@@ -22,9 +22,9 @@ app.get("/", (req, res) => {
 
 const MessagingResponse = require("twilio").twiml.MessagingResponse;
 
-searchGoogle("chinese").then(function(val1) {
-  console.log(val1);
-});
+// search("burger", 6, yelp_key, parseResponseYelp).then(function(val) {
+//   console.log(val);
+// });
 
 app.post("/sms", (req, res) => {
   const twiml = new MessagingResponse();
@@ -47,11 +47,11 @@ app.post("/sms", (req, res) => {
 
 function makeQuery(type, amount, query) {
   if (type === "goog") {
-    return searchGoogle(query, amount);
+    return search(query, amount, goog_key, parseResponseGoog);
   } else if (type === "wiki") {
-    return searchWikedpia(query, amount);
+    return search(query, amount, wiki_key, parseResponseWiki);
   } else if (type === "yelp") {
-    return searchYelp(query, amount);
+    return search(query, amount, yelp_key, parseResponseYelp);
   }
 }
 
@@ -60,16 +60,14 @@ function sendMessage(res, twiml, status) {
   res.end(twiml.toString());
 }
 
-// returns promise of String
-function searchGoogle(query, amount) {
+function search(query, amount, key, parsing) {
   const url =
     "https://www.googleapis.com/customsearch/v1?key=" +
     api_key +
     "&cx=" +
-    goog_key +
+    key +
     "&q=" +
     query;
-
   console.log(url);
 
   const options = {
@@ -80,55 +78,10 @@ function searchGoogle(query, amount) {
       "Accept-Charset": "utf-8"
     }
   };
-  return request(options).then(function(body) {
-    let json = JSON.parse(body);
-    response = parseResponseYelp(json);
-    return response;
-  });
-}
-
-// returns promise of String
-function searchYelp(query) {
-  const url =
-    "https://www.googleapis.com/customsearch/v1?key=" +
-    api_key +
-    "&cx=" +
-    yelp_key +
-    "&q=" +
-    query;
-
-  console.log(url);
 
   return request(options).then(function(body) {
     let json = JSON.parse(body);
-    response = parseResponseYelp(json);
-    return response;
-  });
-}
-
-// returns promise of String
-function searchWikedpia(query, amount) {
-  const url =
-    "https://www.googleapis.com/customsearch/v1?key=" +
-    api_key +
-    "&cx=" +
-    wiki_key +
-    "&q=" +
-    query;
-
-  console.log(url);
-
-  const options = {
-    url: url,
-    method: "GET",
-    headers: {
-      Accept: "application/json",
-      "Accept-Charset": "utf-8"
-    }
-  };
-  return request(options).then(function(body) {
-    let json = JSON.parse(body);
-    response = parseResponseYelp(json);
+    response = parsing(json);
     return response;
   });
 }
@@ -152,6 +105,14 @@ function parseMessage(msg) {
     : null;
 }
 
+function parseResponseGoog(json) {
+  return JSON.stringify(json.items[0].title);
+}
+
 function parseResponseYelp(json) {
+  return JSON.stringify(json.items[0].title);
+}
+
+function parseResponseWiki(json) {
   return JSON.stringify(json.items[0].title);
 }
