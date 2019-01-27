@@ -74,7 +74,7 @@ function makeQuery(type, opt, query) {
     } else if (type === YELP) {
         return search(query, opt, yelp_key, parseResponseYelp);
     } else if (type === TR) {
-        return searchTranslation(query, amount);
+        return searchTranslation(query, opt);
     }
 }
 
