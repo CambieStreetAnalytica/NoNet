@@ -42,6 +42,10 @@ app.get("/", (req, res) => {
 
 const MessagingResponse = require("twilio").twiml.MessagingResponse;
 
+// search("india", 10, yelp_key, parseResponseYelp).then(function(val) {
+//   console.log(val);
+// });
+
 search("india", 10, goog_key, parseResponseGoog).then(function(val) {
   console.log(val);
 });
@@ -103,10 +107,10 @@ function search(query, amount, key, parsing) {
     }
   };
 
+  console.log(url);
   return request(options).then(function(body) {
     let json = JSON.parse(body);
     response = parsing(json, amount);
-    console.log(json);
     return response;
   });
 }
@@ -149,6 +153,7 @@ function parseResponseGoog(json, amount) {
     output += "result:" + k + "\n";
     output += JSON.stringify(json.items[i].title) + "\n";
     output += JSON.stringify(json.items[i].snippet) + "\n";
+    output += "URL: " + JSON.stringify(json.items[i].link) + "\n";
     output += "\n";
   }
   return output;
@@ -168,7 +173,8 @@ function parseResponseWiki(json, amount) {
 
 function parseResponseYelp(json, amount) {
   let output = "";
-  for (i = 0; i < amount; i++) {
+  let char_count = 0;
+  for (i = 0; i < amount && char_count <= 1400; i++) {
     k = 1 + i;
     output += "result:" + k + "\n";
     output += JSON.stringify(json.items[i].title) + "\n";
@@ -185,6 +191,8 @@ function parseResponseYelp(json, amount) {
       JSON.stringify(json.items[i].pagemap.postaladdress[0].streetaddress) +
       "\n";
     output += "\n";
+    char_count = output.length;
+    console.log(char_count);
   }
   return output;
 }
