@@ -123,7 +123,7 @@ function parseMessage(msg) {
   // or 'tr fr: hello world' or 'tr ru: hello world'
   const prefixes = msg
     .split(":")[0]
-    .split(" ", 1)
+    .split(" ", 2)
     .map(val => val.trim());
   const type = prefixes[0];
   const query =
