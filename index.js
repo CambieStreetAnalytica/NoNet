@@ -343,7 +343,7 @@ function searchHelp(query) {
 
     const urlHelp = "\nUrl: URL \n- Returns important text from URL (article body, etc), do not include https:// or https:// in URL";
 
-    const trHelp = "\nTr LANG: TEXT_TO_TRANSLATE - Translates TEXT_TO_TRANSLATE in to LANG \n- supported LANG values: en, es, fr, de, ru";
+    const trHelp = "\nTr LANG: TEXT_TO_TRANSLATE - Translates TEXT_TO_TRANSLATE in to LANG \n- supported LANG values: en, es, fr, de, ru, zh-CN";
 
     const notFound = "This command is not recognized";
 
