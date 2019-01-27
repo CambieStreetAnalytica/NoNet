@@ -180,7 +180,13 @@ function parseResponseGoog(json, amount) {
     output += JSON.stringify(json.items[i].snippet) + "\n";
     try {
       if (json.items[i].pagemap.metatags[0]["og:url"] == undefined) {
-        link = json.items[i].link.replace("https://", "");
+        let link = json.items[i].link;
+        //.replace("https://", "");
+          if (link.includes("https://")) {
+              link = link.replace("https://", "");
+          } else {
+              link = link.replace("http://", "");
+          }
         link = json.items[i].link.replace("http://", "");
         output += "URL: " + JSON.stringify(link) + "\n";
       } else {
