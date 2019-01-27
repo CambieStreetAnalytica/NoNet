@@ -1,6 +1,5 @@
 const express = require("express");
 const request = require("request-promise");
-
 // google translate setup
 const Translate = require("@google-cloud/translate");
 const projectId = "searchwithoutinternet";
@@ -15,14 +14,16 @@ const WEB = "web";
 const YELP = "yelp";
 const WIKI = "wiki";
 const TR = "tr";
+const URL = "url";
 const HELP = "help";
-const validTypes = [WEB, YELP, WIKI, TR, HELP];
+const validTypes = [WEB, YELP, WIKI, TR, HELP, URL];
 const supportedLanguages = ["en", "fr", "ru", "de", "es"];
 
 const yelp_key = "002412142127618762442:e7hmnqop_ai";
 const wiki_key = "002412142127618762442:q3eq1hoh6wu";
 const goog_key = "016717304083729390418:3pmwddke6q4";
 const api_key = "AIzaSyAk8DBiHCVqJJaIoebDgaShY9R647qN37E";
+const DIFF_TOKEN = "ceff2bb13d9516c044cc4f7894d0e93d";
 
 const DEFAULT_SEARCH_LIMIT = 5;
 const DEFAULT_TRANSLATE_LANGUAGE = "fr";
@@ -33,6 +34,7 @@ app.use(bodyParser.urlencoded({ extended: false }));
 
 app.listen(port, () => {
   console.log(`Example app listening on port ${port}!`);
+  searchURL("www.diffbot.com/dev/docs/article/").then(console.log);
   // console.log(parseMessage("yelp: chinese"));
   // console.log(parseMessage("yelp 10: chinese"));
   // console.log(parseMessage("hello world"));
@@ -81,6 +83,8 @@ function makeQuery(type, opt, query) {
     return search(query, opt, yelp_key, parseResponseYelp);
   } else if (type === TR) {
     return searchTranslation(query, opt);
+  } else if (type === URL) {
+    return searchURL(query);
   }
 }
 
@@ -147,6 +151,9 @@ function parseMessage(msg) {
     const lang = prefixes.length > 1 ? prefixes[1] : DEFAULT_TRANSLATE_LANGUAGE;
     const isValid = supportedLanguages.includes(lang) && query !== undefined;
     return isValid ? { type: type, lang: lang, query: query } : null;
+  } else if (type === URL) {
+    const isValid = query.includes(".");
+    return isValid ? { type: type, query: query } : null;
   } else {
     const amount =
       prefixes.length > 1 ? Number(prefixes[1]) : DEFAULT_SEARCH_LIMIT;
@@ -261,4 +268,44 @@ function parseResponseYelp(json, amount) {
 
 function parseResponseTranslate(arr, lang) {
   return `Translated text to ${lang}: ${arr[0]}`;
+}
+
+function searchURL(url) {
+  let call = `https://api.diffbot.com/v3/article?token=${DIFF_TOKEN}&url=https://${url}`;
+
+  const options = {
+    url: call,
+    method: "GET",
+    headers: {
+      Accept: "text/html",
+      "Accept-Charset": "utf-8"
+    }
+  };
+
+  return request(options).then(function(res) {
+    return parseURL(JSON.parse(res));
+  });
+}
+
+function parseURL(res) {
+  if (
+    res === undefined ||
+    res === null ||
+    res.objects === undefined ||
+    res.objects === null
+  ) {
+    return "Invalid URL";
+  } else {
+    let article = res.objects[0].text;
+    article = article
+      .split("")
+      .slice(0, 1400)
+      .join("")
+      .trim();
+    if (article === "") {
+      return "This Page Cannot Be Properly Displayed";
+    } else {
+      return article;
+    }
+  }
 }
