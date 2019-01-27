@@ -17,7 +17,7 @@ const MessagingResponse = require('twilio').twiml.MessagingResponse;
 
 app.post('/sms', (req, res) => {
     const twiml = new MessagingResponse();
-    const incomingMessage = req.body.Body;
+    const incomingMessage = req.body.Body.toLowerCase();
     const searchQuery = parseMessage(incomingMessage);
     if (searchQuery === null) {
         twiml.message("Invalid Search Query, please make query of form 'type limit search'");
