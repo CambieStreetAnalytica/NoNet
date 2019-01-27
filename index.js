@@ -172,7 +172,6 @@ function parseResponseYelp(json, amount) {
     k = 1 + i;
     output += "result:" + k + "\n";
     output += JSON.stringify(json.items[i].title) + "\n";
-    output += JSON.stringify(json.items[i].snippet) + "\n";
     output +=
       "Overall rating: " +
       JSON.stringify(json.items[i].pagemap.aggregaterating[0].ratingvalue) +
@@ -182,6 +181,7 @@ function parseResponseYelp(json, amount) {
       JSON.stringify(json.items[i].pagemap.aggregaterating[0].reviewcount) +
       "\n";
     output +=
+      "location" +
       JSON.stringify(json.items[i].pagemap.postaladdress[0].streetaddress) +
       "\n";
     output += "\n";
