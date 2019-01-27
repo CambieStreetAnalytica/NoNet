@@ -61,7 +61,7 @@ app.post("/sms", (req, res) => {
     const searchQuery = parseMessage(incomingMessage);
     if (searchQuery === null) {
         twiml.message(
-            "Invalid Search Query, please make query of form 'type limit search'"
+            "Invalid Search Query, please enter 'cmd' for help"
         );
         sendMessage(res, twiml, 200);
     } else {
