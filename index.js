@@ -19,23 +19,23 @@ app.post('/sms', (req, res) => {
     res.end(twiml.toString());
 });
 
-// returns promise of {title, desc, link}
-function searchGoogle(query) {
+// returns promise of String
+function searchGoogle(query, amount) {
     return new Promise(function(res, rej) {
-        resolve({});
+        resolve("");
     });
 }
 
-// returns promise of {title, desc, link}
+// returns promise of String
 function searchYelp(query) {
     return new Promise(function(res, rej) {
-        resolve({});
+        resolve("");
     });
 }
 
-// returns promise of {title, desc, link}
-function searchWikedpia(query) {
+// returns promise of String
+function searchWikedpia(query, amount) {
     return new Promise(function(res, rej) {
-        resolve({});
+        resolve("");
     });
 }
