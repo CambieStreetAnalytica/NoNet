@@ -143,7 +143,7 @@ function parseMessage(msg) {
 }
 
 function parseResponseGoog(json, amount) {
-  output = "";
+  let output = "";
   for (i = 0; i < amount; i++) {
     k = 1 + i;
     output += "result:" + k + "\n";
@@ -155,7 +155,7 @@ function parseResponseGoog(json, amount) {
 }
 
 function parseResponseWiki(json, amount) {
-  output = "";
+  let output = "";
   for (i = 0; i < amount; i++) {
     k = 1 + i;
     output += "result:" + k + "\n";
@@ -167,7 +167,7 @@ function parseResponseWiki(json, amount) {
 }
 
 function parseResponseYelp(json, amount) {
-  output = "";
+  let output = "";
   for (i = 0; i < amount; i++) {
     k = 1 + i;
     output += "result:" + k + "\n";
@@ -181,7 +181,7 @@ function parseResponseYelp(json, amount) {
       JSON.stringify(json.items[i].pagemap.aggregaterating[0].reviewcount) +
       "\n";
     output +=
-      "location" +
+      "Location: " +
       JSON.stringify(json.items[i].pagemap.postaladdress[0].streetaddress) +
       "\n";
     output += "\n";
