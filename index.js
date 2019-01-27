@@ -34,7 +34,7 @@ app.use(bodyParser.urlencoded({ extended: false }));
 
 app.listen(port, () => {
   console.log(`Example app listening on port ${port}!`);
-  search("chinese", 3, yelp_key, parseResponseYelp).then(console.log);
+  //search("chinese", 3, yelp_key, parseResponseYelp).then(console.log);
   //searchURL("www.diffbot.com/dev/docs/article/").then(console.log);
   // console.log(parseMessage("yelp: chinese"));
   // console.log(parseMessage("yelp 10: chinese"));
@@ -51,7 +51,7 @@ const MessagingResponse = require("twilio").twiml.MessagingResponse;
 //   console.log(val);
 // });
 
-search("hello world", 10, wiki_key, parseResponseWiki).then(function(val) {
+search("chinese", 4, yelp_key, parseResponseYelp).then(function(val) {
   console.log(val);
 });
 
@@ -77,13 +77,13 @@ app.post("/sms", (req, res) => {
 
 function makeQuery(type, opt, query) {
   if (type === WEB) {
-      output = "";
+    output = "";
     return search(query, opt, goog_key, parseResponseGoog);
   } else if (type === WIKI) {
-      output = "";
+    output = "";
     return search(query, opt, wiki_key, parseResponseWiki);
   } else if (type === YELP) {
-      output = "";
+    output = "";
     return search(query, opt, yelp_key, parseResponseYelp);
   } else if (type === TR) {
     return searchTranslation(query, opt);
@@ -206,12 +206,12 @@ function parseResponseGoog(json, amount) {
 }
 
 function stripHTTPS(str) {
-    if (str.includes("https://")) {
-        str = str.replace("https://", "");
-    } else {
-        str = str.replace("http://", "");
-    }
-    return str;
+  if (str.includes("https://")) {
+    str = str.replace("https://", "");
+  } else {
+    str = str.replace("http://", "");
+  }
+  return str;
 }
 
 function parseResponseWiki(json, amount) {
@@ -248,18 +248,23 @@ function parseResponseYelp(json, amount) {
     k = 1 + i;
     output += "result:" + k + "\n";
     output += JSON.stringify(json.items[i].title) + "\n";
-    output +=
-      "Overall rating: " +
-      JSON.stringify(json.items[i].pagemap.aggregaterating[0].ratingvalue) +
-      "\n";
-    output +=
-      "Number of reviews: " +
-      JSON.stringify(json.items[i].pagemap.aggregaterating[0].reviewcount) +
-      "\n";
-    output +=
-      "Location: " +
-      JSON.stringify(json.items[i].pagemap.postaladdress[0].streetaddress) +
-      "\n";
+    if (json.items[i].pagemap.aggregaterating == undefined) {
+      output +=
+        "Query is not a restaurant. Please enter restaurant name for reviews and address. \n";
+    } else {
+      output +=
+        "Overall rating: " +
+        JSON.stringify(json.items[i].pagemap.aggregaterating[0].ratingvalue) +
+        "\n";
+      output +=
+        "Number of reviews: " +
+        JSON.stringify(json.items[i].pagemap.aggregaterating[0].reviewcount) +
+        "\n";
+      output +=
+        "Location: " +
+        JSON.stringify(json.items[i].pagemap.postaladdress[0].streetaddress) +
+        "\n";
+    }
     output += "\n";
     char_count = output.length;
     //console.log(char_count);
