@@ -9,7 +9,7 @@ const validTypes = ["goog", "yelp", "wiki"];
 const yelp_key = "002412142127618762442:e7hmnqop_ai";
 const wiki_key = "002412142127618762442:q3eq1hoh6wu";
 const goog_key = "016717304083729390418:3pmwddke6q4";
-const api_key = "AIzaSyCeb1PbN_a3Bth_f6VR9krKRjKuc1KPcjw";
+const api_key = "AIzaSyAk8DBiHCVqJJaIoebDgaShY9R647qN37E";
 
 const DEFAULT_SEARCH_LIMIT = 5;
 
@@ -17,9 +17,9 @@ app.use(bodyParser.urlencoded({ extended: false }));
 
 app.listen(port, () => {
   console.log(`Example app listening on port ${port}!`);
-  console.log(parseMessage("yelp: chinese"));
-  console.log(parseMessage("yelp 10: chinese"));
-  console.log(parseMessage("hello world"));
+  // console.log(parseMessage("yelp: chinese"));
+  // console.log(parseMessage("yelp 10: chinese"));
+  // console.log(parseMessage("hello world"));
 });
 app.get("/", (req, res) => {
   res.send("Application Base");
@@ -27,7 +27,7 @@ app.get("/", (req, res) => {
 
 const MessagingResponse = require("twilio").twiml.MessagingResponse;
 
-search("burger", 6, goog_key, parseResponseGoog).then(function(val) {
+search("india", 10, goog_key, parseResponseGoog).then(function(val) {
   console.log(val);
 });
 
@@ -72,7 +72,7 @@ function search(query, amount, key, parsing) {
     "&cx=" +
     key +
     "&q=" +
-    query +
+    query.replace(/\s/g, "%20") +
     "&num=" +
     amount;
   console.log(url);
@@ -80,26 +80,25 @@ function search(query, amount, key, parsing) {
   const options = {
     url: url,
     method: "GET",
-    headers: {
-      Accept: "application/json",
-      "Accept-Charset": "utf-8"
-    }
+    headers: {}
   };
 
   return request(options).then(function(body) {
     let json = JSON.parse(body);
-    response = parsing(json);
+    response = parsing(json, amount);
     return response;
   });
 }
 
 //parses the sent text message into {type, amount, query} -- returns null if msg is malformed
 function parseMessage(msg) {
-    // msg will look like 'wiki 10: germany' or 'wiki: germany' or 'yelp 5: chinese food' or 'yelp: chinese'
-    const prefixes = msg.split(":")[0].split(" ");
-    const type = prefixes[0];
-    const amount = prefixes.length > 1 ? Number(prefixes[1]) : DEFAULT_SEARCH_LIMIT;
-    const query = msg.split(":").length > 1 ? msg.split(":")[1].trim() : undefined;
+  // msg will look like 'wiki 10: germany' or 'wiki: germany' or 'yelp 5: chinese food' or 'yelp: chinese'
+  const prefixes = msg.split(":")[0].split(" ");
+  const type = prefixes[0];
+  const amount =
+    prefixes.length > 1 ? Number(prefixes[1]) : DEFAULT_SEARCH_LIMIT;
+  const query =
+    msg.split(":").length > 1 ? msg.split(":")[1].trim() : undefined;
 
   const isValid =
     validTypes.includes(type) && !Number.isNaN(amount) && query !== undefined;
@@ -112,14 +111,49 @@ function parseMessage(msg) {
     : null;
 }
 
-function parseResponseGoog(json) {
-  return JSON.stringify(json);
+function parseResponseGoog(json, amount) {
+  output = "";
+  for (i = 0; i < amount; i++) {
+    k = 1 + i;
+    output += "result:" + k + "\n";
+    output += JSON.stringify(json.items[i].title) + "\n";
+    output += JSON.stringify(json.items[i].snippet) + "\n";
+    output += "\n";
+  }
+  return output;
 }
 
-function parseResponseYelp(json) {
-  return JSON.stringify(json.items[0].title);
+function parseResponseYelp(json, amount) {
+  output = "";
+  for (i = 0; i < amount; i++) {
+    k = 1 + i;
+    output += "result:" + k + "\n";
+    output += JSON.stringify(json.items[i].title) + "\n";
+    output += JSON.stringify(json.items[i].snippet) + "\n";
+    output += "\n";
+  }
+  return output;
 }
 
-function parseResponseWiki(json) {
-  return JSON.stringify(json.items[0].title);
+function parseResponseWiki(json, amount) {
+  output = "";
+  for (i = 0; i < amount; i++) {
+    k = 1 + i;
+    output += "result:" + k + "\n";
+    output += JSON.stringify(json.items[i].title) + "\n";
+    output += JSON.stringify(json.items[i].snippet) + "\n";
+    output +=
+      "Overall rating: " +
+      JSON.stringify(json.items[i].pagemap.aggregaterating[0].ratingvalue) +
+      "\n";
+    output +=
+      "Number of reviews: " +
+      JSON.stringify(json.items[i].pagemap.aggregaterating[0].reviewcount) +
+      "\n";
+    output +=
+      JSON.stringify(json.items[i].pagemap.postaladdress[0].streetaddress) +
+      "\n";
+    output += "\n";
+  }
+  return output;
 }
