@@ -27,6 +27,8 @@ const api_key = "AIzaSyAk8DBiHCVqJJaIoebDgaShY9R647qN37E";
 const DEFAULT_SEARCH_LIMIT = 5;
 const DEFAULT_TRANSLATE_LANGUAGE = "fr";
 
+let output = "";
+
 app.use(bodyParser.urlencoded({ extended: false }));
 
 app.listen(port, () => {
@@ -46,7 +48,7 @@ const MessagingResponse = require("twilio").twiml.MessagingResponse;
 //   console.log(val);
 // });
 
-search("india", 10, goog_key, parseResponseGoog).then(function(val) {
+search("world", 9, goog_key, parseResponseGoog).then(function(val) {
   console.log(val);
 });
 
@@ -88,15 +90,23 @@ function sendMessage(res, twiml, status) {
 }
 
 function search(query, amount, key, parsing) {
-  const url =
+  query = query.replace(/\s/g, "%20");
+  let url =
     "https://www.googleapis.com/customsearch/v1?key=" +
     api_key +
     "&cx=" +
     key +
     "&q=" +
-    query +
-    "&num=" +
-    amount;
+    query;
+
+  if (amount > 10) {
+    output =
+      "Search entry request exceeded limit, only maximum number of entries displayed \n\n";
+    url += "&num=10";
+    amount = 10;
+  } else {
+    url += "&num=" + amount;
+  }
 
   const options = {
     url: url,
@@ -147,22 +157,56 @@ function parseMessage(msg) {
 }
 
 function parseResponseGoog(json, amount) {
-  let output = "";
   let char_count = 0;
+  //console.log(json.items.length);
+  if (json.items.length < amount) {
+    output += "Fewer search items produced than requested";
+    amount = json.items.length;
+  }
+
   for (i = 0; i < amount && char_count <= 1400; i++) {
     k = 1 + i;
     output += "result:" + k + "\n";
     output += JSON.stringify(json.items[i].title) + "\n";
     output += JSON.stringify(json.items[i].snippet) + "\n";
-    output += "URL: " + JSON.stringify(json.items[i].link) + "\n";
+    try {
+      if (json.items[i].pagemap.metatags[0]["og:url"] == undefined) {
+        link = json.items[i].link.replace("https://", "");
+        link = json.items[i].link.replace("http://", "");
+        output += "URL: " + JSON.stringify(link) + "\n";
+      } else {
+        link = json.items[i].pagemap.metatags[0]["og:url"].replace(
+          "https://",
+          ""
+        );
+        link = json.items[i].pagemap.metatags[0]["og:url"].replace(
+          "http://",
+          ""
+        );
+        output += "URL: " + JSON.stringify(link) + "\n";
+      }
+    } catch (err) {
+      link = json.items[i].link.replace("https://", "");
+      link = json.items[i].link.replace("http://", "");
+      output += "URL: " + JSON.stringify(link) + "\n";
+    }
     output += "\n";
     char_count = output.length;
   }
+
+  if (char_count >= 1400) {
+    output += "Results truncated, SMS char count exceeded";
+  }
+
   return output;
 }
 
 function parseResponseWiki(json, amount) {
-  let output = "";
+  if (json.items.length < amount) {
+    output += "Fewer search items produced than requested";
+    amount = json.items.length;
+  }
+
   let char_count = 0;
   for (i = 0; i < amount && char_count <= 1400; i++) {
     k = 1 + i;
@@ -172,11 +216,20 @@ function parseResponseWiki(json, amount) {
     output += "\n";
     char_count = output.length;
   }
+
+  if (char_count >= 1400) {
+    output += "Results truncated, SMS char count exceeded";
+  }
+
   return output;
 }
 
 function parseResponseYelp(json, amount) {
-  let output = "";
+  if (json.items.length < amount) {
+    output += "Fewer search items produced than requested";
+    amount = json.items.length;
+  }
+
   let char_count = 0;
   for (i = 0; i < amount && char_count <= 1400; i++) {
     k = 1 + i;
@@ -198,6 +251,11 @@ function parseResponseYelp(json, amount) {
     char_count = output.length;
     //console.log(char_count);
   }
+
+  if (char_count >= 1400) {
+    output += "Results truncated, SMS char count exceeded";
+  }
+
   return output;
 }
 
