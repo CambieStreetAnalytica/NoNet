@@ -76,10 +76,13 @@ app.post("/sms", (req, res) => {
 
 function makeQuery(type, opt, query) {
   if (type === WEB) {
+      output = "";
     return search(query, opt, goog_key, parseResponseGoog);
   } else if (type === WIKI) {
+      output = "";
     return search(query, opt, wiki_key, parseResponseWiki);
   } else if (type === YELP) {
+      output = "";
     return search(query, opt, yelp_key, parseResponseYelp);
   } else if (type === TR) {
     return searchTranslation(query, opt);
