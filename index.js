@@ -4,6 +4,10 @@ const bodyParser = require("body-parser");
 const port = process.env.PORT || 1337;
 const validTypes = ["goog", "yelp", "wiki"];
 
+const yelp_key = "002412142127618762442:e7hmnqop_ai";
+const wiki_key = "002412142127618762442:q3eq1hoh6wu";
+const api_key = "AIzaSyCeb1PbN_a3Bth_f6VR9krKRjKuc1KPcjw";
+
 app.use(bodyParser.urlencoded({ extended: false }));
 
 app.listen(port, () => {
