@@ -51,7 +51,7 @@ const MessagingResponse = require("twilio").twiml.MessagingResponse;
 //   console.log(val);
 // });
 
-search("chinese", 4, yelp_key, parseResponseYelp).then(function(val) {
+search("chinese", 5, yelp_key, parseResponseYelp).then(function(val) {
   console.log(val);
 });
 
@@ -242,29 +242,29 @@ function parseResponseYelp(json, amount) {
     output += "Fewer search items produced than requested";
     amount = json.items.length;
   }
-
   let char_count = 0;
   for (i = 0; i < amount && char_count <= 1000; i++) {
-    k = 1 + i;
-    output += "result:" + k + "\n";
-    output += JSON.stringify(json.items[i].title) + "\n";
     if (json.items[i].pagemap.aggregaterating == undefined) {
       output +=
         "Query is not a restaurant. Please enter restaurant name for reviews and address. \n";
-    } else {
-      output +=
-        "Overall rating: " +
-        JSON.stringify(json.items[i].pagemap.aggregaterating[0].ratingvalue) +
-        "\n";
-      output +=
-        "Number of reviews: " +
-        JSON.stringify(json.items[i].pagemap.aggregaterating[0].reviewcount) +
-        "\n";
-      output +=
-        "Location: " +
-        JSON.stringify(json.items[i].pagemap.postaladdress[0].streetaddress) +
-        "\n";
+      break;
     }
+    k = 1 + i;
+    output += "result:" + k + "\n";
+    output += JSON.stringify(json.items[i].title) + "\n";
+
+    output +=
+      "Overall rating: " +
+      JSON.stringify(json.items[i].pagemap.aggregaterating[0].ratingvalue) +
+      "\n";
+    output +=
+      "Number of reviews: " +
+      JSON.stringify(json.items[i].pagemap.aggregaterating[0].reviewcount) +
+      "\n";
+    output +=
+      "Location: " +
+      JSON.stringify(json.items[i].pagemap.postaladdress[0].streetaddress) +
+      "\n";
     output += "\n";
     char_count = output.length;
     //console.log(char_count);
