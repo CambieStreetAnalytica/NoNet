@@ -34,6 +34,7 @@ app.use(bodyParser.urlencoded({ extended: false }));
 
 app.listen(port, () => {
   console.log(`Example app listening on port ${port}!`);
+  search("chinese", 3, yelp_key, parseResponseYelp).then(console.log);
   //searchURL("www.diffbot.com/dev/docs/article/").then(console.log);
   // console.log(parseMessage("yelp: chinese"));
   // console.log(parseMessage("yelp 10: chinese"));
@@ -181,27 +182,16 @@ function parseResponseGoog(json, amount) {
     try {
       if (json.items[i].pagemap.metatags[0]["og:url"] == undefined) {
         let link = json.items[i].link;
-          if (link.includes("https://")) {
-              link = link.replace("https://", "");
-          } else {
-              link = link.replace("http://", "");
-          }
-        link = json.items[i].link.replace("http://", "");
+        link = stripHTTPS(link);
         output += "URL: " + JSON.stringify(link) + "\n";
       } else {
-        link = json.items[i].pagemap.metatags[0]["og:url"].replace(
-          "https://",
-          ""
-        );
-        link = json.items[i].pagemap.metatags[0]["og:url"].replace(
-          "http://",
-          ""
-        );
+        let link = json.items[i].pagemap.metatags[0]["og:url"];
+        link = stripHTTPS(link);
         output += "URL: " + JSON.stringify(link) + "\n";
       }
     } catch (err) {
-      link = json.items[i].link.replace("https://", "");
-      link = json.items[i].link.replace("http://", "");
+      let link = json.items[i].link;
+      link = stripHTTPS(link);
       output += "URL: " + JSON.stringify(link) + "\n";
     }
     output += "\n";
@@ -213,6 +203,15 @@ function parseResponseGoog(json, amount) {
   }
 
   return output;
+}
+
+function stripHTTPS(str) {
+    if (str.includes("https://")) {
+        str = str.replace("https://", "");
+    } else {
+        str = str.replace("http://", "");
+    }
+    return str;
 }
 
 function parseResponseWiki(json, amount) {
