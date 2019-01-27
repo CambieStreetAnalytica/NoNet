@@ -23,6 +23,7 @@ const yelp_key = "002412142127618762442:e7hmnqop_ai";
 const wiki_key = "002412142127618762442:q3eq1hoh6wu";
 const goog_key = "016717304083729390418:3pmwddke6q4";
 const api_key = "AIzaSyAk8DBiHCVqJJaIoebDgaShY9R647qN37E";
+//const map_key = 
 
 const DEFAULT_SEARCH_LIMIT = 5;
 const DEFAULT_TRANSLATE_LANGUAGE = "fr";
@@ -106,9 +107,15 @@ function search(query, amount, key, parsing) {
   return request(options).then(function(body) {
     let json = JSON.parse(body);
     response = parsing(json, amount);
+    response = appendAdd(response);
     console.log(json);
     return response;
   });
+}
+
+function appendAdd(response) {
+  response += " \n \n YOUR AD HERE ";
+  return response;
 }
 
 function searchTranslation(text, lang) {
