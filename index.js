@@ -1,5 +1,5 @@
 const express = require("express");
-const request = require("request");
+const request = require("request-promise");
 
 const app = express();
 const bodyParser = require("body-parser");
@@ -8,6 +8,7 @@ const validTypes = ["goog", "yelp", "wiki"];
 
 const yelp_key = "002412142127618762442:e7hmnqop_ai";
 const wiki_key = "002412142127618762442:q3eq1hoh6wu";
+const goog_key = "016717304083729390418:3pmwddke6q4";
 const api_key = "AIzaSyCeb1PbN_a3Bth_f6VR9krKRjKuc1KPcjw";
 
 app.use(bodyParser.urlencoded({ extended: false }));
@@ -20,6 +21,10 @@ app.get("/", (req, res) => {
 });
 
 const MessagingResponse = require("twilio").twiml.MessagingResponse;
+
+searchGoogle("chinese").then(function(val1) {
+  console.log(val1);
+});
 
 app.post("/sms", (req, res) => {
   const twiml = new MessagingResponse();
@@ -57,46 +62,74 @@ function sendMessage(res, twiml, status) {
 
 // returns promise of String
 function searchGoogle(query, amount) {
-  return new Promise(function(res, rej) {
-    resolve("");
+  const url =
+    "https://www.googleapis.com/customsearch/v1?key=" +
+    api_key +
+    "&cx=" +
+    goog_key +
+    "&q=" +
+    query;
+
+  console.log(url);
+
+  const options = {
+    url: url,
+    method: "GET",
+    headers: {
+      Accept: "application/json",
+      "Accept-Charset": "utf-8"
+    }
+  };
+  return request(options).then(function(body) {
+    let json = JSON.parse(body);
+    response = parseResponseYelp(json);
+    return response;
   });
 }
 
 // returns promise of String
 function searchYelp(query) {
-  return new Promise(function(res, rej) {
-    const url =
-      "https://www.googleapis.com/customsearch/v1?key=" +
-      api_key +
-      "&cx=" +
-      yelp_key +
-      "&q=" +
-      query;
+  const url =
+    "https://www.googleapis.com/customsearch/v1?key=" +
+    api_key +
+    "&cx=" +
+    yelp_key +
+    "&q=" +
+    query;
 
-    console.log(url);
+  console.log(url);
 
-    const options = {
-      url: url,
-      method: "GET",
-      headers: {
-        Accept: "application/json",
-        "Accept-Charset": "utf-8"
-      }
-    };
-
-    request(options, function(err, res, body) {
-      let json = JSON.parse(body);
-
-      console.log(json);
-    });
-    resolve("");
+  return request(options).then(function(body) {
+    let json = JSON.parse(body);
+    response = parseResponseYelp(json);
+    return response;
   });
 }
 
 // returns promise of String
 function searchWikedpia(query, amount) {
-  return new Promise(function(res, rej) {
-    resolve("");
+  const url =
+    "https://www.googleapis.com/customsearch/v1?key=" +
+    api_key +
+    "&cx=" +
+    wiki_key +
+    "&q=" +
+    query;
+
+  console.log(url);
+
+  const options = {
+    url: url,
+    method: "GET",
+    headers: {
+      Accept: "application/json",
+      "Accept-Charset": "utf-8"
+    }
+  };
+  return request(options).then(function(body) {
+    let json = JSON.parse(body);
+    response = parseResponseYelp(json);
+    return response;
   });
 }
 
@@ -117,4 +150,8 @@ function parseMessage(msg) {
         query: query
       }
     : null;
+}
+
+function parseResponseYelp(json) {
+  return JSON.stringify(json.items[0].title);
 }
