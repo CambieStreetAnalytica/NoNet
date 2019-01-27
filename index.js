@@ -34,7 +34,7 @@ app.use(bodyParser.urlencoded({ extended: false }));
 
 app.listen(port, () => {
   console.log(`Example app listening on port ${port}!`);
-  searchURL("www.diffbot.com/dev/docs/article/").then(console.log);
+  //searchURL("www.diffbot.com/dev/docs/article/").then(console.log);
   // console.log(parseMessage("yelp: chinese"));
   // console.log(parseMessage("yelp 10: chinese"));
   // console.log(parseMessage("hello world"));
@@ -50,7 +50,7 @@ const MessagingResponse = require("twilio").twiml.MessagingResponse;
 //   console.log(val);
 // });
 
-search("world", 9, goog_key, parseResponseGoog).then(function(val) {
+search("hello world", 10, wiki_key, parseResponseWiki).then(function(val) {
   console.log(val);
 });
 
@@ -94,7 +94,6 @@ function sendMessage(res, twiml, status) {
 }
 
 function search(query, amount, key, parsing) {
-  query = query.replace(/\s/g, "%20");
   let url =
     "https://www.googleapis.com/customsearch/v1?key=" +
     api_key +
@@ -171,7 +170,7 @@ function parseResponseGoog(json, amount) {
     amount = json.items.length;
   }
 
-  for (i = 0; i < amount && char_count <= 1400; i++) {
+  for (i = 0; i < amount && char_count <= 1000; i++) {
     k = 1 + i;
     output += "result:" + k + "\n";
     output += JSON.stringify(json.items[i].title) + "\n";
@@ -201,7 +200,7 @@ function parseResponseGoog(json, amount) {
     char_count = output.length;
   }
 
-  if (char_count >= 1400) {
+  if (char_count >= 1000) {
     output += "Results truncated, SMS char count exceeded";
   }
 
@@ -215,7 +214,7 @@ function parseResponseWiki(json, amount) {
   }
 
   let char_count = 0;
-  for (i = 0; i < amount && char_count <= 1400; i++) {
+  for (i = 0; i < amount && char_count <= 1000; i++) {
     k = 1 + i;
     output += "result:" + k + "\n";
     output += JSON.stringify(json.items[i].title) + "\n";
@@ -224,7 +223,7 @@ function parseResponseWiki(json, amount) {
     char_count = output.length;
   }
 
-  if (char_count >= 1400) {
+  if (char_count >= 1000) {
     output += "Results truncated, SMS char count exceeded";
   }
 
@@ -238,7 +237,7 @@ function parseResponseYelp(json, amount) {
   }
 
   let char_count = 0;
-  for (i = 0; i < amount && char_count <= 1400; i++) {
+  for (i = 0; i < amount && char_count <= 1000; i++) {
     k = 1 + i;
     output += "result:" + k + "\n";
     output += JSON.stringify(json.items[i].title) + "\n";
@@ -259,7 +258,7 @@ function parseResponseYelp(json, amount) {
     //console.log(char_count);
   }
 
-  if (char_count >= 1400) {
+  if (char_count >= 1000) {
     output += "Results truncated, SMS char count exceeded";
   }
 
