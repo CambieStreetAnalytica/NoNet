@@ -15,7 +15,7 @@ const YELP = "yelp";
 const WIKI = "wiki";
 const TR = "tr";
 const URL = "url";
-const HELP = "help";
+const HELP = "cmd";
 const validTypes = [WEB, YELP, WIKI, TR, HELP, URL];
 const supportedLanguages = ["en", "fr", "ru", "de", "es"];
 
