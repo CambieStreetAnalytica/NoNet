@@ -1,19 +1,38 @@
 {
-  "name": "searchwithoutinternet",
-  "version": "1.0.0",
-  "description": "super node app ",
-  "main": "index.js",
-  "scripts": {
-    "start": "node index.js"
-  },
+  "name": "appengine-hello-world",
+  "description": "Simple Hello World Node.js sample for Google App Engine Standard Environment.",
+  "version": "0.0.1",
+  "private": true,
+  "license": "Apache-2.0",
+  "author": "Google Inc.",
   "repository": {
     "type": "git",
     "url": ""
   },
-  "author": "",
-  "license": "ISC",
-  "bugs": {
-    "url": ""
+  "engines": {
+    "node": ">=8"
   },
-  "homepage": ""
+  "scripts": {
+    "deploy": "gcloud app deploy",
+    "start": "node index.js",
+    "system-test": "",
+    "test": "",
+    "e2e-test": ""
+  },
+  "dependencies": {
+    "express": "^4.16.3",
+    "twilio": "^3.27.1"
+  },
+  "devDependencies": {
+    "@google-cloud/nodejs-repo-tools": "^3.0.0"
+  },
+  "cloud-repo-tools": {
+    "test": {
+      "app": {
+        "msg": "Hello, world!"
+      }
+    },
+    "requiresKeyFile": true,
+    "requiresProjectId": true
+  }
 }
