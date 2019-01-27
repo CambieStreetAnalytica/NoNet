@@ -154,7 +154,7 @@ function parseResponseGoog(json, amount) {
   return output;
 }
 
-function parseResponseYelp(json, amount) {
+function parseResponseWiki(json, amount) {
   output = "";
   for (i = 0; i < amount; i++) {
     k = 1 + i;
@@ -166,7 +166,7 @@ function parseResponseYelp(json, amount) {
   return output;
 }
 
-function parseResponseWiki(json, amount) {
+function parseResponseYelp(json, amount) {
   output = "";
   for (i = 0; i < amount; i++) {
     k = 1 + i;
