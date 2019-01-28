@@ -22,7 +22,7 @@ const supportedLanguages = ["en", "fr", "ru", "de", "es"];
 const yelp_key = "002412142127618762442:e7hmnqop_ai";
 const wiki_key = "002412142127618762442:q3eq1hoh6wu";
 const goog_key = "016717304083729390418:3pmwddke6q4";
-const api_key = "AIzaSyAk8DBiHCVqJJaIoebDgaShY9R647qN37E";
+const api_key = "AIzaSyC4se9GiK9H0unl_BXNrqNG8XLc_fmiQ34";
 const DIFF_TOKEN = "ceff2bb13d9516c044cc4f7894d0e93d";
 
 const DEFAULT_SEARCH_LIMIT = 5;
@@ -51,7 +51,7 @@ const MessagingResponse = require("twilio").twiml.MessagingResponse;
 //   console.log(val);
 // });
 
-search("chinese", 5, yelp_key, parseResponseYelp).then(function(val) {
+search("SHAKE shack", 5, yelp_key, parseResponseYelp).then(function(val) {
   console.log(val);
 });
 
