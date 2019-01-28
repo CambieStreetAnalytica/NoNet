@@ -15,9 +15,9 @@ const YELP = "yelp";
 const WIKI = "wiki";
 const TR = "tr";
 const URL = "url";
-const HELP = "help";
+const HELP = "cmd";
 const validTypes = [WEB, YELP, WIKI, TR, HELP, URL];
-const supportedLanguages = ["en", "fr", "ru", "de", "es"];
+const supportedLanguages = ["en", "fr", "ru", "de", "es", "zh-CN"];
 
 const yelp_key = "002412142127618762442:e7hmnqop_ai";
 const wiki_key = "002412142127618762442:q3eq1hoh6wu";
@@ -26,7 +26,7 @@ const api_key = "AIzaSyC4se9GiK9H0unl_BXNrqNG8XLc_fmiQ34";
 const DIFF_TOKEN = "ceff2bb13d9516c044cc4f7894d0e93d";
 
 const DEFAULT_SEARCH_LIMIT = 5;
-const DEFAULT_TRANSLATE_LANGUAGE = "fr";
+const DEFAULT_TRANSLATE_LANGUAGE = "en";
 
 let output = "";
 
@@ -51,7 +51,7 @@ const MessagingResponse = require("twilio").twiml.MessagingResponse;
 //   console.log(val);
 // });
 
-search("SHAKE shack", 5, yelp_key, parseResponseYelp).then(function(val) {
+search("chinese", 5, yelp_key, parseResponseYelp).then(function(val) {
   console.log(val);
 });
 
@@ -60,9 +60,7 @@ app.post("/sms", (req, res) => {
   const incomingMessage = req.body.Body.toLowerCase();
   const searchQuery = parseMessage(incomingMessage);
   if (searchQuery === null) {
-    twiml.message(
-      "Invalid Search Query, please make query of form 'type limit search'"
-    );
+    twiml.message("Invalid Search Query, please enter 'cmd' for help");
     sendMessage(res, twiml, 200);
   } else {
     let opt = searchQuery.hasOwnProperty("amount")
@@ -89,6 +87,8 @@ function makeQuery(type, opt, query) {
     return searchTranslation(query, opt);
   } else if (type === URL) {
     return searchURL(query);
+  } else if (type === HELP) {
+    return searchHelp(query);
   }
 }
 
@@ -157,6 +157,8 @@ function parseMessage(msg) {
   } else if (type === URL) {
     const isValid = query.includes(".");
     return isValid ? { type: type, query: query } : null;
+  } else if (type === HELP) {
+    return { type: type, query: query };
   } else {
     const amount =
       prefixes.length > 1 ? Number(prefixes[1]) : DEFAULT_SEARCH_LIMIT;
@@ -319,4 +321,52 @@ function parseURL(res) {
       return article;
     }
   }
+}
+
+function searchHelp(query) {
+  const genericHelp = `These are the possible commands available \n
+        Web - Search Google\n
+        Yelp - Search Yelp\n
+        Wiki - Search Wikipedia\n
+        Url - get Website text\n
+        Tr - get translation\n
+        commands are not case sensitive \n
+        for more information, please type 'help: COMMAND'`;
+
+  const webHelp =
+    "\nWEB AMOUNT(optional): QUERY \n- gets top AMOUNT results of QUERY from Google, AMOUNT has a maximum of 10 and a default of 5";
+
+  const yelpHelp =
+    "\nYelp AMOUNT(optional): QUERY \n- gets top AMOUNT results of QUERY from Yelp, AMOUNT has a maximum of 10 and a default of 5";
+
+  const wikiHelp =
+    "\nWiki AMOUNT(optional): QUERY \n- gets top AMOUNT results of QUERY from Wikipedia, AMOUNT has a maximum of 10 and a default of 5";
+
+  const urlHelp =
+    "\nUrl: URL \n- Returns important text from URL (article body, etc), do not include https:// or https:// in URL";
+
+  const trHelp =
+    "\nTr LANG: TEXT_TO_TRANSLATE - Translates TEXT_TO_TRANSLATE in to LANG \n- supported LANG values: en, es, fr, de, ru, zh-CN";
+
+  const notFound = "This command is not recognized";
+
+  return new Promise(function(res, req) {
+    if (query === undefined || query === null) {
+      res(genericHelp);
+    } else {
+      if (query === "web") {
+        res(webHelp);
+      } else if (query === "yelp") {
+        res(yelpHelp);
+      } else if (query === "wiki") {
+        res(wikiHelp);
+      } else if (query === "url") {
+        res(urlHelp);
+      } else if (query === "tr") {
+        res(trHelp);
+      } else {
+        res(notFound);
+      }
+    }
+  });
 }
