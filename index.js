@@ -19,11 +19,11 @@ const HELP = "cmd";
 const validTypes = [WEB, YELP, WIKI, TR, HELP, URL];
 const supportedLanguages = ["en", "fr", "ru", "de", "es", "zh-CN"];
 
-const yelp_key = "002412142127618762442:e7hmnqop_ai";
-const wiki_key = "002412142127618762442:q3eq1hoh6wu";
-const goog_key = "016717304083729390418:3pmwddke6q4";
-const api_key = "AIzaSyC4se9GiK9H0unl_BXNrqNG8XLc_fmiQ34";
-const DIFF_TOKEN = "ceff2bb13d9516c044cc4f7894d0e93d";
+const yelp_key = "YELP_API_KEY";
+const wiki_key = "WIKI_API_KEY";
+const goog_key = "GOOGLE_SEARCH_API_KEY";
+const api_key = "GOOGLE_API_KEY";
+const DIFF_TOKEN = "ARTICLE_PARSER_API_KEY";
 
 const DEFAULT_SEARCH_LIMIT = 5;
 const DEFAULT_TRANSLATE_LANGUAGE = "en";
