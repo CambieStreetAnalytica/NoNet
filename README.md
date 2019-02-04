@@ -20,3 +20,14 @@ The use cases are many:
 
 ## Technology Used
 We integrated Twilio for SMS with a NodeJS server, hosted on Google App Engine, and using multiple API's
+
+## Examples
+![translate example](https://raw.githubusercontent.com/CambieStreetAnalytica/NoNet/master/imgs/translationExample.png)
+![translate example](https://raw.githubusercontent.com/CambieStreetAnalytica/NoNet/master/imgs/webExample.png)
+![translate example](https://raw.githubusercontent.com/CambieStreetAnalytica/NoNet/master/imgs/articleExample.png)
+![translate example](https://raw.githubusercontent.com/CambieStreetAnalytica/NoNet/master/imgs/wikiExample.png)
+![translate example](https://raw.githubusercontent.com/CambieStreetAnalytica/NoNet/master/imgs/yelpExample.png)
+
+
+## Read More
+you can read more about NoNet at https://devpost.com/software/nonet/
